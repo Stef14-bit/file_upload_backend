@@ -18,28 +18,32 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.post("/upload-picture", async (req, res) => {
   try {
     if (!req.files) {
       res.send({ status: false, message: "No file uploaded" });
     } else {
-      let picture = req.files.picture;
-      avatar.mv("./uploads/" + picture.name);
+      let file = req.files.file;
+      file.mv("./uploads/" + file.name);
       res.send({
         status: true,
         message: "File uploaded",
         data: {
-          name: picture.name,
-          mimetype: picture.mimetype,
-          size: avatar.size,
+          name: file.name,
+          mimetype: file.mimetype,
+          size: file.size,
         },
       });
     }
   } catch (err) {
     res.status(500).send(err);
   }
+});
+
+app.get("/", (req, res) => {
+  res.send("Welcome");
 });
 
 app.listen(port, () => {
